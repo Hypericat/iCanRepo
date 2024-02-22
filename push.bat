@@ -1,4 +1,5 @@
-set commit=%1
+Setlocal EnableDelayedExpansion
+for %%a in (%*) do set commit=!commit! %%a
 git add .
 git commit -m "%commit%"
 git remote add origin https://github.com/Hypericat/iCanRepo.git
