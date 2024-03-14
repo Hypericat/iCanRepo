@@ -2,25 +2,25 @@ package DataStructure;
 
 import java.util.Arrays;
 
-public class List<T> extends Container {
+public class Arraylist<T> extends Container {
     private Object[] array;
-    public List() {
+    public Arraylist() {
         this.array = new Object[1];
         this.size = 0;
     }
-    public List(List<T> list) {
-        this((T[]) list.array, list.getSize());
+    public Arraylist(Arraylist<T> arraylist) {
+        this((T[]) arraylist.array, arraylist.getSize());
     }
-    public List(java.util.List<T> list) {
+    public Arraylist(java.util.List<T> list) {
         this();
         for (T t : list) {
             add(t);
         }
     }
-    public List(T[] array) {
+    public Arraylist(T[] array) {
         this(array, array.length);
     }
-    private List(T[] array, int size) {
+    private Arraylist(T[] array, int size) {
         this.array = new Object[array.length];
         this.size = size;
         System.arraycopy(array, 0, this.array, 0, this.size);
@@ -31,6 +31,15 @@ public class List<T> extends Container {
     public void set(int index, T val) {
         lengthCheck(index);
         array[index] = val;
+    }
+    public double getAverage() {
+        if (isEmpty()) return 0;
+        if (!(get(0) instanceof Number)) throw new IllegalStateException("Called getAverage() on non number list");
+        double average = 0;
+        for (int i = 0; i < size; i++) {
+            average += ((Number) get(i)).doubleValue() / ((double) size);
+        }
+        return average;
     }
     public void insert(int index, T val) {
         lengthCheck(index);
@@ -94,12 +103,12 @@ public class List<T> extends Container {
             remove(index);
         }
     }
-    public List<T> subList(int startIndex, int endIndex) {
-        List<T> newList = new List<>();
+    public Arraylist<T> subList(int startIndex, int endIndex) {
+        Arraylist<T> newArraylist = new Arraylist<>();
         for (int i = startIndex; i < endIndex; i++) {
-            newList.add(get(i));
+            newArraylist.add(get(i));
         }
-        return newList;
+        return newArraylist;
     }
     public void setAll(T beforeVal, T afterVal) {
         int index = 0;
@@ -108,9 +117,9 @@ public class List<T> extends Container {
             index++;
         }
     }
-    public void addAll(List<T> list) {
-        for (int i = 0; i < list.getSize(); i++) {
-            add(list.get(i));
+    public void addAll(Arraylist<T> arraylist) {
+        for (int i = 0; i < arraylist.getSize(); i++) {
+            add(arraylist.get(i));
         }
     }
     public void addAll(T[] array) {
@@ -118,8 +127,8 @@ public class List<T> extends Container {
             add(t);
         }
     }
-    public boolean equals(List<T> list) {
-        return list.array == this.array;
+    public boolean equals(Arraylist<T> arraylist) {
+        return arraylist.array == this.array;
     }
     public void remove(int index) {
         lengthCheck(index);
