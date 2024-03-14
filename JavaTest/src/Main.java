@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -22,9 +23,9 @@ public class Main {
     }
 
     public static boolean isPalindrome(String str) {
-        for (int i = 0; i < str.length() / 2; i++) {
-            if (str.charAt(i) != str.charAt(str.length() - i - 1)) return false;
-        }
+        if (str.charAt(0) != str.charAt(str.length() - 1)) return false;
+        if (str.length() > 2)
+            return isPalindrome(str.substring(1, str.length() - 1));
         return true;
     }
 
