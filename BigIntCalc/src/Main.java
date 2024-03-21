@@ -4,10 +4,12 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
+
         System.out.println("Enter equation:");
         InputResult result = parseInput(scanner.nextLine());
+        StringBuilder res = new StringBuilder();
         for (int i = 0; i < result.num1.length(); i++) {
-
+            System.out.println(calculate("2", "2", 0, Operation.SUB));
         }
     }
 
@@ -38,12 +40,14 @@ public class Main {
         for (int i = 0; i < num1.length(); i++) {
             int val = Integer.parseInt(String.valueOf(num1.charAt(i)));
             int total = op(val, mult, op);
+            total += carry;
             builder.append(String.valueOf(total).charAt(0));
             if (total < 10) {
                 carry = 0;
                 continue;
             }
-
+            System.out.println(carry);
+            carry = Integer.parseInt(String.valueOf(total).substring(0, String.valueOf(total).length() - 1));
         }
         builder.reverse();
         for (int i = 0; i < offset; i++) {
