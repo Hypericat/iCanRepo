@@ -10,6 +10,7 @@ import java.util.List;
 public class PathFinder {
     private List<TotalNode> queue;
     private NodeHandler handler;
+    private List<TotalNode> doneNodes = new ArrayList<>();
     private int endId = -1;
     private int bestEnd = Integer.MAX_VALUE;
     public PathFinder(NodeHandler handler) {
@@ -20,7 +21,7 @@ public class PathFinder {
         TotalNode start = new TotalNode(handler.getNode(startId));
         start.setBestLength(0);
         TotalNode end = new TotalNode(handler.getNode(endId));
-        endId = end.getId();
+        this.endId = endId;
         addToQueue(start);
         while (!queue.isEmpty()) {
             processNode();
@@ -30,7 +31,10 @@ public class PathFinder {
     }
     public void processNode() {
         TotalNode n1 = getNextNode();
+        System.out.println(n1.getBestLength());
+        System.out.println(n1.getId());
         explore(n1);
+        doneNodes.add(n1);
         queue.remove(n1);
         //AHHH MY HEAD HURTS
 
@@ -38,7 +42,7 @@ public class PathFinder {
     public TotalNode getNextNode() {
         if (queue.isEmpty()) return null;
         int bestLength = Integer.MAX_VALUE;
-        TotalNode best;
+        TotalNode best = null;
         for (TotalNode n : queue) {
             if (n.getBestLength() < bestLength) {
                 best = n;
@@ -46,20 +50,22 @@ public class PathFinder {
             }
         }
         if (bestLength == Integer.MAX_VALUE) return queue.get(0);
-        return null;
+        return best;
     }
     public void explore(TotalNode n) {
-        for (Path p : n.getPaths()) {
+        path : for (Path p : n.getPaths()) {
+            for (TotalNode node : doneNodes) {
+                if (node.getId() == p.getOther(n.getId())) continue path;
+            }
             if (hasQueueNode(p.getOther(n.getId()))) {
                 TotalNode newNode = queue.get(getQueueNodeIndex(p.getOther(n.getId())));
                 newNode.setBestLength(Math.min(newNode.getBestLength(), n.getBestLength() + p.getLength()));
                 if (newNode.getId() == endId) bestEnd = newNode.getBestLength();
             }
-            TotalNode newNode = new TotalNode(p.getOther(n.getId()));
+            TotalNode newNode = new TotalNode(handler.getNode(p.getOther(n.getId())));
             newNode.setBestLength(n.getBestLength() + p.getLength());
 
             if (newNode.getId() == endId) bestEnd = newNode.getBestLength();
-
             addToQueue(newNode);
         }
     }
