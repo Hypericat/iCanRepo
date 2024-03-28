@@ -8,9 +8,7 @@ public class Main {
         System.out.println("Enter equation:");
         InputResult result = parseInput(scanner.nextLine());
         StringBuilder res = new StringBuilder();
-        for (int i = 0; i < result.num1.length(); i++) {
-            System.out.println(calculate("2", "2", 0, Operation.SUB));
-        }
+        System.out.println(add("333", "49"));
     }
 
     public static InputResult parseInput(String str) {
@@ -33,13 +31,46 @@ public class Main {
             if (op == Operation.DIVIDE) return  num1 / num2;
             return -1;
     }
-    public static String calculate(String num1, String char2, int offset, Operation op) {
-        int mult = Integer.parseInt(String.valueOf(char2));
+    public static int op(String num1, String num2, Operation op) {
+        return(op(Integer.parseInt(num1), Integer.parseInt(num2), op));
+    }
+    public static int op(char num1, char num2, Operation op) {
+        return(op(Integer.parseInt(String.valueOf(num1)), Integer.parseInt(String.valueOf(num2)), op));
+    }
+    public static String add(String char1, String char2) {
+        String longest = char1;
+        String shortest = char2;
+        if (char2.length() > char1.length()) {
+            longest = char2;
+            shortest = char1;
+        }
+        StringBuilder res = new StringBuilder();
+        int carry = 0;
+        for (int i = 0; i < longest.length(); i++) {
+            if (shortest.length() <= longest.length() - i - 1) {
+                System.out.println("Test");
+                //I think problem here?
+                res.append(Integer.parseInt(String.valueOf(longest.charAt(i))) + carry);
+                continue;
+            }
+            String result = String.valueOf(op(longest.charAt(longest.length() - i - 1), shortest.charAt(longest.length() - i - 1), Operation.ADD) + carry);
+            res.append(result.charAt(result.length() - 1));
+            carry = 0;
+            System.out.println("Result : " + result);
+            if (result.length() > 1) carry = Integer.parseInt(result.substring(0, result.length() - 1));
+            System.out.println("carry : " + carry);
+        }
+        if (carry > 0) res.append(carry);
+        res.reverse();
+        return res.toString();
+    }
+    public static String mult(String num1, String char2, int offset) {
+        int num2 = Integer.parseInt(String.valueOf(char2));
         StringBuilder builder = new StringBuilder();
         int carry = 0;
         for (int i = 0; i < num1.length(); i++) {
             int val = Integer.parseInt(String.valueOf(num1.charAt(i)));
-            int total = op(val, mult, op);
+            int total = op(val, num2, Operation.MULTIPLY);
             total += carry;
             builder.append(String.valueOf(total).charAt(0));
             if (total < 10) {
