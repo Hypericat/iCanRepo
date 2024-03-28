@@ -8,14 +8,12 @@ import java.util.List;
 
 public class TotalNode extends Node {
     int bestLength = Integer.MAX_VALUE;
-    List<TotalNode> pasts;
+    TotalNode past;
     public TotalNode(int id) {
         super(id);
-        pasts = new ArrayList<>();
     }
     public TotalNode(Node n) {
         super(n.getId());
-        pasts = new ArrayList<>();
         this.paths = n.getPaths();
     }
 
