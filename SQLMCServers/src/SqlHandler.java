@@ -14,16 +14,51 @@ public class SqlHandler {
         System.out.println("Connected to database");
     }
     public void useDB(String name) throws SQLException {
-        queryVoid("USING " + name);
+        queryVoid("USE " + name);
+        System.out.println("Using Database " + name);
     }
-    private ResultSet query(String query) throws SQLException {
+    public void initTable() {
+        try {
+            execute("CREATE TABLE IPADDRESS(" +
+                    "addressID INT PRIMARY KEY AUTO_INCREMENT," +
+                    "ipAddress TEXT NOT NULL," +
+                    "version TEXT," +
+                    "protocol INT," +
+                    "enforcesSecureChat BOOL," +
+                    "motd TEXT," +
+                    "playerMax INT," +
+                    "playerOnline INT" +
+                    ");");
+        } catch (SQLException ex) {
+            System.out.println("Error or table already initialized");
+            return;
+        }
+        System.out.println("Initialized table");
+    }
+    public void dropTable() {
+        try {
+            execute("DROP TABLE IPADDRESS");
+            System.out.println("Successfully dropped table!");
+        } catch (SQLException e) {
+            System.out.println("Failed to drop table, most likely does not exist");
+        }
+    }
+    public void clearTable() {
+        dropTable();
+        initTable();
+    }
+    public boolean execute(String query) throws SQLException {
+        return stmt.execute(query);
+    }
+    public ResultSet query(String query) throws SQLException {
         return stmt.executeQuery(query);
     }
-    private void queryVoid(String query) throws SQLException {
+    public void queryVoid(String query) throws SQLException {
         discard(query(query));
     }
-    public void addEntry(IPRecordEntry entry) {
-
+    public void addEntry(IPRecordEntry entry) throws SQLException {
+        String query = "VALUES ('" + entry.getAddress().toString() + "','" + entry.getVersion() + "'," + entry.getProtocol() + "," + (entry.getEnforcesSecureChat() ? "true" : "false") + ",'" + entry.getMotd() + "'," + entry.getPlayerMax() + "," + entry.getPlayerOnline() + ")";
+        execute("INSERT INTO IPADDRESS (ipAddress,version,protocol,enforcesSecureChat,motd,playerMax,PlayerOnline) " + query);
     }
     public static void discard(Object obj) throws SQLException {
         if(obj instanceof Statement) ((Statement) obj).close();
@@ -31,6 +66,7 @@ public class SqlHandler {
         if(obj instanceof ResultSet) ((ResultSet) obj).close();
     }
     public void closeCon() throws SQLException {
+        stmt.close();
         con.close();
     }
 

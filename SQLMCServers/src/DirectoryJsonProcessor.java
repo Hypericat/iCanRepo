@@ -31,7 +31,13 @@ public class DirectoryJsonProcessor {
         JsonHelper helper = new JsonHelper(raw.getJson());
         ipAddress address = raw.getAddress();
         System.out.println("Converting " + address.toString());
-        String version = (String) helper.getField(new String[] {"version", "name"});
+        String version;
+        try {
+            version = ((String) helper.getField(new String[]{"version", "name"})).replaceAll("'", "");
+        } catch (JSONException | NullPointerException ex) {
+            version = "";
+        }
+
         int protocol;
         try {
             protocol = (int) helper.getField(new String[]{"version", "protocol"});
@@ -47,9 +53,11 @@ public class DirectoryJsonProcessor {
 
         String motd;
         try {
-            motd = (String) helper.getField(new String[] {"description", "text"});
+            motd = ((String) helper.getField(new String[] {"description", "text"})).replaceAll("'", "");
         } catch (JSONException exception) {
-            motd = (String) helper.getField(new String[] {"description"});
+            motd = ((String) helper.getField(new String[] {"description"})).replaceAll("'", "");
+        } catch (NullPointerException ex) {
+            motd = "";
         }
         int playerOnline;
         int playerMax;
